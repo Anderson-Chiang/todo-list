@@ -3,6 +3,8 @@ const mongoose = require('mongoose')
 
 const exphbs = require('express-handlebars')
 
+const Todo = require('./models/todo') // 相對路徑 (./)
+
 const app = express()
 
 // connect database (url解析的東西 & 監控的引擎被棄用，兩個都需要加入參數-可複製貼上)
@@ -26,7 +28,11 @@ app.set('view engine', 'hbs')
 
 // set route
 app.get('/', (req, res) => {
-  res.render('index')
+  // 拿到全部的 Todo 資料
+  Todo.find()
+    .lean()
+    .then(todos => res.render('index', { todos: todos }))
+    .catch(error => console.error(error))
 })
 
 app.listen(3000, () => {
