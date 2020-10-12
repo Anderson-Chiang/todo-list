@@ -10,4 +10,5 @@ const todoSchema = new Schema({
   }
 })
 
-module.exports = mongoose.model('Todo', todoSchema)
+// 匯出到 app.js 變成大寫的 Todo
+module.exports = mongoose.model('Todo', todoSchema) 

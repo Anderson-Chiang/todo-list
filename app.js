@@ -3,6 +3,8 @@ const mongoose = require('mongoose')
 
 const exphbs = require('express-handlebars')
 
+const bodyParser = require('body-parser')
+
 const Todo = require('./models/todo') // 相對路徑 (./)
 
 const app = express()
@@ -26,6 +28,9 @@ db.once('open', () => {
 app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
 app.set('view engine', 'hbs')
 
+// 每一個 request 進來之後，都會通過 body-parser 的解析
+app.use(bodyParser.urlencoded({ extended: true }))
+
 // set route
 app.get('/', (req, res) => {
   // 拿到全部的 Todo 資料
@@ -33,6 +38,18 @@ app.get('/', (req, res) => {
     .lean()
     .then(todos => res.render('index', { todos: todos }))
     .catch(error => console.error(error))
+})
+
+app.get('/todos/new', (req, res) => {
+  return res.render('new')
+})
+
+app.post('/todos', (req, res) => {
+  const name = req.body.name // 記得要安裝 body-parser
+
+  return Todo.create({ name: name })
+    .then(() => res.redirect('/'))
+    .catch(error => console.log(error))
 })
 
 app.listen(3000, () => {
