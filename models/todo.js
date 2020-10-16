@@ -7,7 +7,11 @@ const todoSchema = new Schema({
   name: {
     type: String,
     require: true,
-  }
+  },
+  isDone: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 // 匯出到 app.js 變成大寫的 Todo

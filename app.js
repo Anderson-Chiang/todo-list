@@ -68,10 +68,11 @@ app.get('/todos/:id/edit', (req, res) => {
 
 app.post('/todos/:id/edit', (req, res) => {
   const id = req.params.id
-  const name = req.body.name
+  const { name, isDone } = req.body //解構賦值語法，把name跟isDone一起從body拿出來(拿到body裡面定義好的name跟isDone)
   return Todo.findById(id)
     .then(todo => {
       todo.name = name
+      todo.isDone = isDone === 'on' //等同於 if/else statement
       return todo.save()
     })
     .then(() => res.redirect(`/todos/${id}`))
