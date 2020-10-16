@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const exphbs = require('express-handlebars')
 const bodyParser = require('body-parser')
+const methodOverride = require('method-override')
 
 const Todo = require('./models/todo') // 相對路徑 (./)
 
@@ -28,6 +29,9 @@ app.set('view engine', 'hbs')
 
 // 每一個 request 進來之後，都會通過 body-parser 的解析
 app.use(bodyParser.urlencoded({ extended: true }))
+
+// method-override ()
+app.use(methodOverride('_method'))
 
 // set route
 app.get('/', (req, res) => {
@@ -67,7 +71,7 @@ app.get('/todos/:id/edit', (req, res) => {
     .catch(error => console.log(error))
 })
 
-app.post('/todos/:id/edit', (req, res) => {
+app.put('/todos/:id', (req, res) => {
   const id = req.params.id
   const { name, isDone } = req.body //解構賦值語法，把name跟isDone一起從body拿出來(拿到body裡面定義好的name跟isDone)
   return Todo.findById(id)
@@ -80,7 +84,7 @@ app.post('/todos/:id/edit', (req, res) => {
     .catch(error => console.log(error))
 })
 
-app.post('/todos/:id/delete', (req, res) => {
+app.delete('/todos/:id', (req, res) => {
   const id = req.params.id
   return Todo.findById(id)
     .then(todo => todo.remove())
