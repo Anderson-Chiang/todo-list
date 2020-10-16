@@ -6,6 +6,7 @@ const methodOverride = require('method-override')
 
 const Todo = require('./models/todo') // 相對路徑 (./)
 
+const routes = require('./routes') //可以不用寫/index，因為node.js預設會去找
 const app = express()
 
 // connect database (url解析的東西 & 監控的引擎被棄用，兩個都需要加入參數-可複製貼上)
@@ -34,63 +35,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
 // set route
-app.get('/', (req, res) => {
-  // 拿到全部的 Todo 資料
-  Todo.find()
-    .lean()
-    .sort({ _id: 'asc' }) // (desc 降冪)，_id 是按照 mongo DB 生成的順序來排序
-    .then(todos => res.render('index', { todos: todos }))
-    .catch(error => console.error(error))
-})
-
-app.get('/todos/new', (req, res) => {
-  return res.render('new')
-})
-
-app.post('/todos', (req, res) => {
-  const name = req.body.name // 記得要安裝 body-parser
-
-  return Todo.create({ name: name })
-    .then(() => res.redirect('/'))
-    .catch(error => console.log(error))
-})
-
-app.get('/todos/:id', (req, res) => {
-  const id = req.params.id
-  return Todo.findById(id)
-    .lean()
-    .then(todo => res.render('detail', { todo: todo }))
-    .catch(error => console.log(error))
-})
-
-app.get('/todos/:id/edit', (req, res) => {
-  const id = req.params.id
-  return Todo.findById(id)
-    .lean()
-    .then(todo => res.render('edit', { todo: todo }))
-    .catch(error => console.log(error))
-})
-
-app.put('/todos/:id', (req, res) => {
-  const id = req.params.id
-  const { name, isDone } = req.body //解構賦值語法，把name跟isDone一起從body拿出來(拿到body裡面定義好的name跟isDone)
-  return Todo.findById(id)
-    .then(todo => {
-      todo.name = name
-      todo.isDone = isDone === 'on' //等同於 if/else statement
-      return todo.save()
-    })
-    .then(() => res.redirect(`/todos/${id}`))
-    .catch(error => console.log(error))
-})
-
-app.delete('/todos/:id', (req, res) => {
-  const id = req.params.id
-  return Todo.findById(id)
-    .then(todo => todo.remove())
-    .then(() => res.redirect('/'))
-    .catch(error => console.log(error))
-})
+app.use(routes)
 
 app.listen(3000, () => {
   console.log('App is running on http://localhost:3000')
