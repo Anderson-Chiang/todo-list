@@ -7,7 +7,7 @@ const routes = require('./routes') //可以不用寫/index，因為node.js預設
 require('./config/mongoose') //不用設變數來接
 
 const app = express()
-
+const PORT = process.env.PORT || 3000
 
 // set template engine
 app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
@@ -22,6 +22,6 @@ app.use(methodOverride('_method'))
 // set route
 app.use(routes)
 
-app.listen(3000, () => {
-  console.log('App is running on http://localhost:3000')
+app.listen(PORT, () => {
+  console.log(`App is running on http://localhost:${PORT}`)
 })
