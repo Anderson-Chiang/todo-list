@@ -1,4 +1,4 @@
-const Todo = require('../Todo') //在根目錄的第二層，所以是../
+const Todo = require('../todo') //在根目錄的第二層，所以是../
 
 const db = require('../../config/mongoose')
 
