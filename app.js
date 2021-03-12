@@ -32,6 +32,14 @@ app.use(methodOverride('_method'))
 // 調用 usePassport函式，並傳入必要參數app
 usePassport(app)
 
+// 依登入狀態切換導覽列
+app.use((req, res, next) => {
+  console.log(req.user)
+  res.locals.isAuthenticated = req.isAuthenticated
+  res.locals.user = req.user
+  next()
+})
+
 // set route
 app.use(routes)
 
