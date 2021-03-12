@@ -5,6 +5,9 @@ const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
 
 const routes = require('./routes') //可以不用寫/index，因為node.js預設會去找
+
+// 匯入passport設定檔，定義userPassport函式
+const usePassport = require('./config/passport')
 require('./config/mongoose') //不用設變數來接
 
 const app = express()
@@ -25,6 +28,9 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 // method-override ()
 app.use(methodOverride('_method'))
+
+// 調用 usePassport函式，並傳入必要參數app
+usePassport(app)
 
 // set route
 app.use(routes)
