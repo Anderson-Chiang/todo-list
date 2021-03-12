@@ -3,6 +3,8 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 
+const User = require('../models/user') //引入使用者資料
+
 module.exports = app => {
   // 初始化 Passport 模組
   app.use(passport.initialize())
