@@ -12,6 +12,12 @@ const todoSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  userId: { // 加入關聯設定
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    index: true,
+    required: true
+  }
 })
 
 // 匯出到 app.js 變成大寫的 Todo

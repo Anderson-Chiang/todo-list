@@ -34,7 +34,6 @@ usePassport(app)
 
 // 依登入狀態切換導覽列
 app.use((req, res, next) => {
-  console.log(req.user)
   res.locals.isAuthenticated = req.isAuthenticated
   res.locals.user = req.user
   next()
