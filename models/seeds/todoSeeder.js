@@ -1,13 +1,38 @@
-const Todo = require('../todo') //在根目錄的第二層，所以是../
+const bcrypt = require('bcryptjs')
 
+// 因為 MONGODB_URI 的關係，這邊要加到種子檔案(獨立於app.js)
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
+const Todo = require('../todo') //在根目錄的第二層，所以是../
+const User = require('../user')
 const db = require('../../config/mongoose')
 
+const SEED_USER = {
+  name: 'root',
+  email: 'root@example.com',
+  password: '12345678'
+}
+
 db.once('open', () => {
-  // Todo 只有定義 name，先輸入 name 就好
-  // 透過 for 迴圈，來重複執行 Todo 的 create 這件事情
-  // create裡面傳入一個物件，這個物件就是我們要變成Todo這筆資料的內容
-  for (let i =0; i < 10; i++) {
-    Todo.create({ name: `name-${i}`})
-  } 
-  console.log('done.')
+  bcrypt
+    .genSalt(10)
+    .then(salt => bcrypt.hash(SEED_USER.password, salt))
+    .then(hash => User.create({
+      name: SEED_USER.name,
+      email: SEED_USER.email,
+      password: hash
+    }))
+    .then(user => {
+      const userId = user._id
+      return Promise.all(Array.from(
+        { length: 10 },
+        (_, i) => Todo.create({ name: `name-${i}`, userId })
+      ))
+    })
+    .then(() => {
+      console.log('done.')
+      process.exit()
+    })
 })
