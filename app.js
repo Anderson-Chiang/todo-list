@@ -3,6 +3,7 @@ const session = require('express-session')
 const exphbs = require('express-handlebars')
 const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
+const flash = require('connect-flash') // 引用套件
 
 const routes = require('./routes') //可以不用寫/index，因為node.js預設會去找
 
@@ -31,11 +32,14 @@ app.use(methodOverride('_method'))
 
 // 調用 usePassport函式，並傳入必要參數app
 usePassport(app)
+app.use(flash()) // 掛載套件，注意()
 
 // 依登入狀態切換導覽列
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.isAuthenticated
   res.locals.user = req.user
+  res.locals.success_msg = req.flash('success_msg')  // 設定 success_msg 訊息
+  res.locals.warning_msg = req.flash('warning_msg')  // 設定 warning_msg 訊息
   next()
 })
 
